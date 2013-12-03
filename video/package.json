@@ -1,0 +1,15 @@
+{
+  "name": "OrnamentTournamentLaptopController",
+  "version": "0.0.1",
+  "dependencies": {
+    "express": "3.1.x",
+    "mongodb": "1.3.*",
+    "ws": "0.4.31",
+    "pm2": "0.6.5",
+    "colors": "0.6.2"
+  },
+  "engines": {
+    "node": "0.10.20",
+    "npm": "1.2.x"
+  }
+}
