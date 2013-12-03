@@ -16,10 +16,10 @@ void loop(){
 //  rotateDeg(360, .5); 
 //  delay(1000);
 
-  rotateDeg(2500, .2);  // down 
+  rotateDeg(1000, .3);  // down 
   delay(1000); 
   
-  rotateDeg(-2500, .2);  //up
+  rotateDeg(-1000, .3);  //up
   delay(1000); 
 
 //  rotations(3);

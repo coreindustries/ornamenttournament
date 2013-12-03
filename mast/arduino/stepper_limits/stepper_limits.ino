@@ -20,32 +20,36 @@ so only one supply is necessary.
 #define UPPER_LIMIT_PIN A5
 #define LOWER_LIMIT_PIN A4
 
-int move_distance = 0;      // distance (in degrees) to move on each loop. negative values UP, positive DOWN
-int speed = .2;             // try more votage to see if we can go faster
+int move_distance = -1000;      // distance (in degrees) to move on each loop. positive values UP, negative DOWN
+float speed = .2;             // try more votage to see if we can go faster
 bool limits_found = false;  // set true after we find our limits
 
 
 void setup() { 
   pinMode(DIR_PIN, OUTPUT);
   pinMode(STEP_PIN, OUTPUT);
-  // pinMode(UPPER_LIMIT_PIN, INPUT);
+  pinMode(LOWER_LIMIT_PIN, INPUT);
+  pinMode(UPPER_LIMIT_PIN, INPUT);
+  digitalWrite(LOWER_LIMIT_PIN, LOW);
+  digitalWrite(UPPER_LIMIT_PIN, LOW);
   Serial.begin(9600);
   
-  findLimits();
+//  findLimits();
 } 
 
 
 
 void loop(){ 
-  // rotateDeg(2500, .2);  // down 
-  // delay(1000); 
+//  rotateDeg(100, .2);  // down 
+//  delay(1000); 
   
   // rotateDeg(-2500, .2);  //up
   // delay(1000); 
 
-  checkLimits();
+//  checkLimits();
   move(move_distance);
-  delay(10);
+//  rotateDeg(move_distance, .2);
+  delay(1000);
 
 }
 
@@ -57,32 +61,29 @@ To avoid fluctuations, add a 1K resistor between A5 and GND, and A4 and GND
 void checkLimits(){
   int upper_switch = analogRead(UPPER_LIMIT_PIN);
   int lower_switch = analogRead(LOWER_LIMIT_PIN);
-  // Serial.print("Upper: ");
-  
-  // Serial.print("Lower: ");
-  // Serial.println(lower_switch);
+//  Serial.println(lower_switch);   
 
   if(upper_switch == 1023 ){
     Serial.print("UPPER LIMIT REACHED: ");
     Serial.println(upper_switch);
-    
-    // move_distance = 0;
-    // Serial.println("FULL STOP");
+    move_distance = 0;
+    Serial.println("FULL STOP");
   }
     if(lower_switch == 1023 ){
     Serial.print("LOWER LIMIT REACHED: ");
-    Serial.println(lower_switch);
-    
-    // move_distance = 0;
-    // Serial.println("FULL STOP");
+    Serial.println(lower_switch);    
+    move_distance = 0;
+    Serial.println("FULL STOP");
   }
+
+
 }
 
 
 
 void findLimits(){
   Serial.println("Starting findLimits function");
-  // move_distance = -10;
+  move_distance = -100;
   
 }
 
@@ -90,43 +91,25 @@ void findLimits(){
 // move the specified degrees in a direction
 // sanity check first
 void move(int distance){
-  if(distance > 0){
+  Serial.print("Move: ");
+  Serial.println(distance);
+  if(distance !=0){
     rotateDeg(distance, speed);
   }
 }
 
 
-void rotations(int rot){
- int d = rot * 360;
- rotateDeg(d, .7); 
-}
-
-
-
-void rotate(int steps, float speed){ 
-  //rotate a specific number of microsteps (8 microsteps per step) - (negitive for reverse movement)
-  //speed is any number from .01 -> 1 with 1 being fastest - Slower is stronger
-  int dir = (steps > 0)? HIGH:LOW;
-  steps = abs(steps);
-
-  digitalWrite(DIR_PIN,dir); 
-
-  float usDelay = (1/speed) * 70;
-
-  for(int i=0; i < steps; i++){ 
-    digitalWrite(STEP_PIN, HIGH); 
-    delayMicroseconds(usDelay); 
-
-    digitalWrite(STEP_PIN, LOW); 
-    delayMicroseconds(usDelay); 
-  } 
-} 
 
 void rotateDeg(float deg, float speed){ 
   //rotate a specific number of degrees (negitive for reverse movement)
   //speed is any number from .01 -> 1 with 1 being fastest - Slower is stronger
+  Serial.print("rotateDeg: ");
+  Serial.println(deg);
   int dir = (deg > 0)? HIGH:LOW;
   digitalWrite(DIR_PIN,dir); 
+
+  // Serial.print("rotateDeg: ");
+  // Serial.println(deg);
 
   int steps = abs(deg)*(1/0.225);
   float usDelay = (1/speed) * 70;
