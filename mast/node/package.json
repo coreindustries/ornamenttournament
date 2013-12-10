@@ -1,0 +1,14 @@
+{
+  "name": "ornamenttournament-mast",
+  "version": "0.0.1",
+  "dependencies": {
+    "ws" : "0.4.31",
+    "duino" : "0.0.8",
+    "colors": "0.6.2",
+    "log4js": "0.6.9"
+  },
+  "engines": {
+    "node": "0.10.20",
+    "npm": "1.2.x"
+  }
+}
