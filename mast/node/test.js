@@ -12,6 +12,7 @@ var led = new arduino.Led({
 
 
 
+var current_step = 0;	// counter
 var DIR_PIN = 2;
 var STEP_PIN = 3;
 
@@ -20,41 +21,61 @@ board.pinMode(DIR_PIN, 'out');
 board.pinMode(STEP_PIN, 'out');
 
 
+
+
 board.on('ready', function(){
 	board.log("READY", board.HIGH, board.digitalWrite);
-
 	// console.log("DATE? ", +new Date(), new Date());
-
 	// led.blink(1);			// WORKS!
+	// board.digitalWrite(DIR_PIN, board.LOW);
 
-	board.digitalWrite(DIR_PIN, board.LOW);
-
-
-
-
-	for(var i=0; i<500; i++){
-		oneStep();
-		// oneStep();
-		// board.digitalWrite(STEP_PIN, 0);
-		// board.delay(100);
-		// board.digitalWrite(STEP_PIN, 255);
-		// board.delay(100);
-	}
-	
-
+	startMove('up', 1, 3000);
 });
+
 
 board.on('data', function(m){
 	board.log(' data: '+m);
 });
 
 
-function oneStep(speed){
-	speed = speed || 100;
-	console.log("oneStep. speed: "+speed);
-	board.digitalWrite(STEP_PIN, 0);
-	setTimeout(board.digitalWrite(STEP_PIN, 255), speed);
+/*
+dir : "up" or "down"
+speed : 0 - 1
+num_steps : how far
+*/
+function startMove(dir, speed, num_steps){
+	console.log(+new Date(), "startMove. dir: "+ dir+ " speed: "+speed+" num_steps: "+num_steps);
+	speed = speed || 10;
+	steps = num_steps; // set the global variable
+	current_step = 0;
+	var direction = dir == 'up' ? board.LOW : board.HIGH;
+	board.digitalWrite(DIR_PIN, direction);
+	oneStep(speed, num_steps);
 }
+
+
+function oneStep(speed, num_steps){
+	console.log(+new Date(), "oneStep. speed: "+speed);
+	board.digitalWrite(STEP_PIN, board.LOW);
+	setTimeout(twoStep, speed, speed, num_steps);
+}
+
+function twoStep(speed, num_steps){
+	console.log(+new Date(), "twoStep: "+num_steps);
+	board.digitalWrite(STEP_PIN, board.HIGH);
+	// stop me if I've gone too far
+	++current_step;
+	if(current_step == num_steps){
+		console.log(+new Date(), "exited after "+current_step+" steps");
+		current_step = 0;
+		return true;
+	}else{
+		oneStep(speed, num_steps);
+	}
+	
+}
+
+
 
 
 function rotateDeg(deg, speed){
