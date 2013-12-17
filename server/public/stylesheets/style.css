@@ -1,5 +1,5 @@
 body {
-  padding: 50px;
+  padding: 10px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
   color:#fff;
   background-color: #009507;
@@ -7,4 +7,10 @@ body {
 
 a {
   color: #00B7FF;
+}
+
+#videoCanvas {
+	width: 640px;
+	height: 480px;
+	background-color: #333;
 }

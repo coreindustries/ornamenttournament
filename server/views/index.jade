@@ -2,4 +2,8 @@ extends layout
 
 block content
   h1= title
-  p Welcome to #{title}
+  canvas#videoCanvas
+   p Please use a browser that supports the Canvas Element, like
+   a(href='http://www.google.com/chrome') Chrome
+  script(src='javascripts/jsmpg.js')
+  script(src='javascripts/player.js')
