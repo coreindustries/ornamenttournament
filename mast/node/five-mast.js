@@ -96,7 +96,7 @@ function reverseDirection(){
 
   if(+new Date() - last_reverse_time > 1000){ // wait at least 1 second before reversing
     current_direction = current_direction === 0 ? 1 : 0; // reverse
-    console.log(" new direction current_direction "+ current_direction);
+    // console.log(" new direction current_direction "+ current_direction);
     board.digitalWrite(DIR_PIN, current_direction);
     last_reverse_time = new Date();
   }
