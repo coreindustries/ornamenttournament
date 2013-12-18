@@ -14,3 +14,13 @@ a {
 	height: 480px;
 	background-color: #333;
 }
+
+#controls div{
+	background-color:red;
+	padding:10px;
+	border: 1px solid black;
+	margin:5px;
+	text-align: center;
+	width: 20px;
+	cursor: pointer;
+}

@@ -5,7 +5,7 @@
 # contains "*.log"
 
 # update F to be the base folder for the project
-F='/Users/coreysi/Sites/prototypes/jello/ornamenttournament/server/'
+F='/home/corey/ornamenttournament/server/'
 app="app.js"
 
 echo $F"app.js"

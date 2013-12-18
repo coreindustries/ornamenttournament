@@ -5,7 +5,8 @@ sudo ffmpeg -s 640x480 -f video4linux2 -i /dev/video0 -f mpeg1video -b 800k -r 3
 ERROR sudo avconv -s 640x480 -f video4linux2 -i /dev/video0 -f mpeg1video -b 800k -r 30 http://127.0.0.1:8082/s3cret/640/480/
 sudo ffmpeg -s 1280x960 -f video4linux2 -i /dev/video0 -f mpeg1video -b 800k -r 30 http://127.0.0.1:8082/s3cret/1280/960/
 sudo ffmpeg -s 1280x960 -f video4linux2 -i /dev/video0 -f mpeg1video -b 1500k -r 30 http://127.0.0.1:8082/s3cret/1280/960/
-sudo ffmpeg -s 1280x960 -f video4linux2 -i /dev/video0 -f mpeg1video -b 3500k -r 30 http://127.0.0.1:8082/s3cret/1280/960/
+
+** sudo ffmpeg -s 1280x720 -f video4linux2 -i /dev/video0 -f mpeg1video -b 3500k -r 30 http://127.0.0.1:8082/s3cret/1280/720/
 */
 var STREAM_PORT = 8082,
 	STREAM_SECRET = 's3cret', // CHANGE THIS!

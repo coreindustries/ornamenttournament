@@ -5,7 +5,8 @@
     "ws" : "0.4.31",
     "duino" : "0.0.8",
     "colors": "0.6.2",
-    "log4js": "0.6.9"
+    "log4js": "0.6.9",
+    "johnny-five": "*"
   },
   "engines": {
     "node": "0.10.20",

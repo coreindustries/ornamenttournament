@@ -5,7 +5,7 @@
 # contains "*.log"
 
 # update F to be the base folder for the project
-F='/Users/coreysi/Sites/prototypes/jello/ornamenttournament/video/'
+F='/home/corey/ornamenttournament/video/'
 app="stream-server.js"
 
 echo $F$app

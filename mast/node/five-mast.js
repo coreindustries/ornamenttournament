@@ -167,7 +167,8 @@ function twoStep(speed, num_steps){
   if(current_step == num_steps && !finding_limits){       // don't stop if we're limit hunting
     console.log(+new Date(), "exited after "+current_step+" steps");
     current_step = 0;
-    return true; // this stop us
+    process.exit();
+    // return true; // this stop us
   }else{
     if(finding_limits){
       // handle how to shut down the finding_limits routine
