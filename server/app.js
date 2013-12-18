@@ -65,6 +65,18 @@ wss.on('connection', function(ws) {
     ws.on('message', function(message) {
         var message = JSON.parse(message);
         l.log("message", message);
+        if(message.type !== undefined){
+        switch (message.type){
+            case "status":
+                handleStatusMessage(ws, message);
+                break;
+            case "control":
+                handeControlMessage(ws, message);
+                break;
+            }
+        }else{
+            l.warn("WARN: unrecognized socket message : ", message);
+        }
     });
 
     ws.on('close', function(message) {
@@ -74,6 +86,30 @@ wss.on('connection', function(ws) {
 
 });
 
+
+// messages with type: "control" get routed here
+// control messages are created by human operators
+// and sent to the robot
+function handeControlMessage(ws, o){
+	l.log("CONTROL: ", o.action);
+	/* 	LOOP OVER ACTION OBJECT 
+		handle multiple controls here
+	   	{ action: { mast: 'up' } }
+	   	{ action: { move: {angle: 55, thrust: 20}, look: {pan: 30, tilt: 40} } }
+	*/
+	for(var k in o.action){
+		if(k == "mast"){
+			l.warn(" action: ", o.action[k]);
+			if(o.action[k] == 'up'){
+				startMove('up', 1, 500);
+			}
+			if(o.action[k] == 'down'){
+				startMove('down', 1, 300);
+			}
+		}
+	}
+
+}
 
 
 
@@ -128,7 +164,7 @@ board.on("ready", function() {
     limitBottom.on("data", function() {
       if(this.value > 1000){
         bottom_limit_current_step = current_step;
-        console.log(+new Date(), "BOTTOM LIMIT ", bottom_limit_current_step);
+        l.info("BOTTOM LIMIT ", bottom_limit_current_step);
         bottom_limit = true;
       }else{
         bottom_limit = false;
@@ -137,7 +173,7 @@ board.on("ready", function() {
     limitTop.on("data", function() {
       if(this.value > 1000){
         top_limit_current_step = current_step;
-        console.log(+new Date(), "TOP LIMIT ", top_limit_current_step);
+        l.info("TOP LIMIT ", top_limit_current_step);
         top_limit = true;
       }else{
         top_limit = false;
@@ -151,22 +187,22 @@ board.on("ready", function() {
 
 // kick this off to find the limits
 function findLimits(){
-  console.log("findLimits()");
+  l.info("findLimits()");
   finding_limits = true;
 
   // are we at the top or bottom already?
   if(atLimit()){
     if(bottom_limit){
-      console.log("findLimits() at bottom limit, moving up");
+      l.info("findLimits() at bottom limit, moving up");
       startMove('up', 1, 3000);
     }
     if(top_limit){
-      console.log("findLimits() at top limit, moving down");
+      l.info("findLimits() at top limit, moving down");
       startMove('down', 1, 3000);
     }
   }else{
   // we're not at the top or bottom, start moving and see what happens
-    console.log("findLimits() someplace in the middle, moving down");
+    l.info("findLimits() someplace in the middle, moving down");
     startMove('down', 1, 3000); // arbitrarily pick down first
 
   }
@@ -175,8 +211,7 @@ function findLimits(){
 
 
 function reverseDirection(){
-  console.log(+new Date(), "reverseDirection current_direction "+ current_direction);
-
+  // l.debug("reverseDirection current_direction "+ current_direction);
   if(+new Date() - last_reverse_time > 1000){ // wait at least 1 second before reversing
     current_direction = current_direction === 0 ? 1 : 0; // reverse
     // console.log(" new direction current_direction "+ current_direction);
@@ -199,7 +234,8 @@ function startMove(dir, speed, num_steps){
   // or if we're not at a limit, all good
   if( (top_limit && dir == 'down') || (bottom_limit && dir == 'up') || !atLimit() || finding_limits){
     // good to go
-    console.log(+new Date(), "startMove. dir: "+ dir+ " speed: "+speed+" num_steps: "+num_steps);
+    // console.log(+new Date(), "startMove. dir: "+ dir+ " speed: "+speed+" num_steps: "+num_steps);
+    l.debug("startMove. dir: "+ dir+ " speed: "+speed+" num_steps: "+num_steps);
     speed = speed || 10;
     steps = num_steps; // set the global variable
     current_step = 0;
@@ -207,7 +243,7 @@ function startMove(dir, speed, num_steps){
     board.digitalWrite(DIR_PIN, current_direction);
     oneStep(speed, num_steps);
   }else{
-    console.log("StartMove, but at limit. Doing nothing. top_limit ", top_limit, " bottom_limit ", bottom_limit, " dir ", dir);
+    l.warn("StartMove, but at limit. Doing nothing. top_limit ", top_limit, " bottom_limit ", bottom_limit, " dir ", dir);
   }
   
 }
@@ -218,7 +254,7 @@ function startMove(dir, speed, num_steps){
 function oneStep(speed, num_steps){
   // console.log(+new Date(), "oneStep. speed: "+speed);
   if(atLimit() && finding_limits){
-    console.log(+new Date(), "oneStep. atLimit? ", atLimit(), " finding_limits? ", finding_limits);
+    // l.debug("oneStep. atLimit? ", atLimit(), " finding_limits? ", finding_limits);
     reverseDirection();
   }
 
@@ -248,7 +284,7 @@ function twoStep(speed, num_steps){
   ++current_step;
 
   if(current_step == num_steps && !finding_limits){       // don't stop if we're limit hunting
-    console.log(+new Date(), "exited after "+current_step+" steps");
+    l.warn("exited after "+current_step+" steps");
     current_step = 0;
     // process.exit();
     return true; // this stop us
@@ -257,7 +293,7 @@ function twoStep(speed, num_steps){
       // handle how to shut down the finding_limits routine
       if(bottom_limit_current_step && top_limit_current_step){
         finding_limits = false;
-        console.log("Finding limits complete. stopping");
+        l.warn("Finding limits complete. stopping");
         console.log("top: ",top_limit_current_step, " bottom: ", bottom_limit_current_step);
         var distance = top_limit_current_step - bottom_limit_current_step;
         var half = Math.floor(distance/2);
