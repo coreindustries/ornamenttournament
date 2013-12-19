@@ -101,10 +101,10 @@ function handeControlMessage(ws, o){
 		if(k == "mast"){
 			l.warn(" action: ", o.action[k]);
 			if(o.action[k] == 'up'){
-				startMove('up', 1, 500);
+				startMove('up', 2, 500);
 			}
 			if(o.action[k] == 'down'){
-				startMove('down', 1, 300);
+				startMove('down', 2, 300);
 			}
 		}
 	}
@@ -180,7 +180,6 @@ board.on("ready", function() {
       }
     });
 
-
 });
 
 
@@ -194,11 +193,11 @@ function findLimits(){
   if(atLimit()){
     if(bottom_limit){
       l.info("findLimits() at bottom limit, moving up");
-      startMove('up', 1, 3000);
+      startMove('up', 25, 3000);
     }
     if(top_limit){
       l.info("findLimits() at top limit, moving down");
-      startMove('down', 1, 3000);
+      startMove('down', 25, 3000);
     }
   }else{
   // we're not at the top or bottom, start moving and see what happens
